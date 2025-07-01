@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Сервис PostgreSQL
+  db:
+    image: postgres:15-alpine  # Используем легковесный образ Alpine
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - ./.env  # Загружаем переменные из .env файла
+    ports:
+      # Пробрасываем порт на хост-машину (удобно для отладки через DBeaver, etc.)
+      - "5432:5432"
+    volumes:
+      # Сохраняем данные PostgreSQL между перезапусками контейнера
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Сервис FastAPI
+  fastapi-app:
+    build: ./backend  # Указываем путь к директории с Dockerfile
+    container_name: backend
+    restart: always
+    env_file:
+      - ./.env  # Также загружаем переменные для подключения к БД
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy # Запускаем FastAPI только после того, как БД будет готова
+
+  # Сервис Streamlit
+  streamlit-app:
+    build: ./streamlit_app
+    container_name: streamlit_container
+    restart: always
+    ports:
+      - "8501:8501"
+    environment:
+      # Эта переменная говорит Streamlit, где найти FastAPI внутри Docker-сети
+      - API_URL=http://fastapi-app:8000
+    depends_on:
+      - fastapi-app # Запускаем Streamlit после FastAPI
+
+# Определяем volume для персистентности данных PostgreSQL
+volumes:
+  postgres_data:

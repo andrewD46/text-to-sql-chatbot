@@ -1,0 +1,95 @@
+model:
+  name: "sales_analytics_model"
+  description: "Семантическая модель для анализа данных о продажах, продуктах и покупателях."
+
+tables:
+  - name: "sales"
+    description: "Содержит записи о каждой отдельной продаже. Это основная таблица фактов."
+    columns:
+      - name: "sale_id"
+        description: "Уникальный идентификатор транзакции продажи."
+        type: "categorical"
+        expr: "sale_id"
+
+      - name: "product_id"
+        description: "Внешний ключ, ссылающийся на продукт, который был продан."
+        type: "categorical"
+        expr: "product_id"
+
+      - name: "customer_id"
+        description: "Внешний ключ, ссылающийся на покупателя, совершившего покупку."
+        type: "categorical"
+        expr: "customer_id"
+
+      - name: "sale_date"
+        description: "Дата, когда была совершена продажа. Может использоваться для анализа по дням, месяцам, годам."
+        type: "time"
+        expr: "sale_date"
+
+      - name: "quantity"
+        description: "Количество единиц товара, проданных в рамках одной транзакции."
+        type: "continuous"
+        expr: "quantity"
+
+      - name: "total_amount"
+        description: "Общая сумма продажи в рублях (цена * количество)."
+        type: "continuous"
+        expr: "total_amount"
+
+  - name: "products"
+    description: "Справочник продуктов. Содержит информацию о каждом товаре."
+    columns:
+      - name: "product_id"
+        description: "Уникальный идентификатор продукта."
+        type: "categorical"
+        expr: "product_id"
+
+      - name: "product_name"
+        description: "Полное название продукта."
+        type: "categorical"
+        expr: "product_name"
+
+      - name: "category"
+        description: "Категория, к которой относится продукт (например, 'Электроника', 'Книги')."
+        type: "categorical"
+        expr: "category"
+
+      - name: "price"
+        description: "Цена за одну единицу продукта в рублях."
+        type: "continuous"
+        expr: "price"
+
+  - name: "customers"
+    description: "Справочник покупателей. Содержит информацию о каждом клиенте."
+    columns:
+      - name: "customer_id"
+        description: "Уникальный идентификатор покупателя."
+        type: "categorical"
+        expr: "customer_id"
+
+      - name: "customer_name"
+        description: "Имя и фамилия покупателя."
+        type: "categorical"
+        expr: "customer_name"
+
+      - name: "city"
+        description: "Город проживания покупателя."
+        type: "categorical"
+        expr: "city"
+
+      - name: "registration_date"
+        description: "Дата регистрации покупателя в системе."
+        type: "time"
+        expr: "registration_date"
+
+
+relationships:
+  - from_table: "sales"
+    to_table: "products"
+    on: "sales.product_id = products.product_id"
+    description: "Связывает каждую продажу с конкретным проданным продуктом."
+
+  - from_table: "sales"
+    to_table: "customers"
+    on: "sales.customer_id = customers.customer_id"
+    description: "Связывает каждую продажу с конкретным покупателем."
