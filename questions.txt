@@ -1,19 +1,19 @@
-Простые и общие вопросы
-    - Какова общая выручка от всех продаж за всё время?
-    - Сколько всего уникальных покупателей совершили хотя бы одну покупку?
+Basic and general questions
+- What is the total revenue from all sales for all time?
+- How many unique buyers made at least one purchase?
 
-Вопросы на ранжирование (Топ-N)
-    - Покажи топ-5 самых продаваемых товаров по общей выручке.
-    - Какой покупатель из города 'Москва' потратил больше всего денег?
+Questions for ranking (Top-N)
+- Show the top 5 best-selling products by total revenue.
+- Which buyer from the city 'Moscow' spent the most money?
 
-Вопросы для анализа по времени
-    - Какова динамика продаж по месяцам за 2024 год? Покажи общую выручку за каждый месяц.
-    - Сколько новых клиентов было зарегистрировано во второй половине 2023 года?
+Questions for analysis by time
+- What is the sales dynamics by month for 2024? Show the total revenue for each month.
+- How many new customers were registered in the second half of 2023?
 
-Вопросы для анализа по категориям и продуктам
-    - Какая категория товаров является самой прибыльной?
-    - Какие товары чаще всего покупали вместе с 'Ноутбук "ProBook 15"'?
+Questions for analysis by categories and products
+- Which product category is the most profitable?
+- What products were most often purchased together with 'Notebook "ProBook 15"'?
 
-Вопросы о поведении клиентов
-    - Каков средний чек (средняя сумма одной продажи)?
-    - Покажи список покупателей, которые не совершали покупок в 2024 году.
+Questions about customer behavior
+- What is the average check (average amount of one sale)?
+- Show a list of buyers who did not make any purchases in 2024.

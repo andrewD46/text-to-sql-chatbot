@@ -1,9 +1,8 @@
--- Удаляем таблицы, если они уже существуют, для чистого запуска
 DROP TABLE IF EXISTS sales;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS customers;
 
--- 1. Таблица для хранения данных о покупателях
+
 CREATE TABLE customers (
     customer_id SERIAL PRIMARY KEY,
     customer_name VARCHAR(255) NOT NULL,
@@ -11,7 +10,7 @@ CREATE TABLE customers (
     registration_date DATE DEFAULT CURRENT_DATE
 );
 
--- 2. Таблица для хранения данных о продуктах
+
 CREATE TABLE products (
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
@@ -19,7 +18,7 @@ CREATE TABLE products (
     price DECIMAL(10, 2) NOT NULL CHECK (price > 0)
 );
 
--- 3. Таблица для хранения данных о продажах
+
 CREATE TABLE sales (
     sale_id SERIAL PRIMARY KEY,
     product_id INT NOT NULL,
@@ -30,55 +29,52 @@ CREATE TABLE sales (
     CONSTRAINT fk_product
         FOREIGN KEY(product_id)
         REFERENCES products(product_id)
-        ON DELETE SET NULL, -- Если продукт удалят, продажа останется
+        ON DELETE SET NULL,
     CONSTRAINT fk_customer
         FOREIGN KEY(customer_id)
         REFERENCES customers(customer_id)
-        ON DELETE SET NULL -- Если клиента удалят, продажа останется
+        ON DELETE SET NULL
 );
 
--- Добавляем индексы для ускорения запросов по внешним ключам
+
 CREATE INDEX idx_sales_product_id ON sales(product_id);
 CREATE INDEX idx_sales_customer_id ON sales(customer_id);
 CREATE INDEX idx_sales_sale_date ON sales(sale_date);
 
--- =================================================================
--- II. DML (Data Manipulation Language) - Скрипты вставки данных
--- =================================================================
 
--- 1. Вставка данных о 10 покупателях
+-- 1. Inserting data for 10 customers
 INSERT INTO customers (customer_name, city, registration_date) VALUES
-('Иван Петров', 'Москва', '2023-01-15'),
-('Анна Сидорова', 'Санкт-Петербург', '2023-02-20'),
-('Сергей Иванов', 'Новосибирск', '2023-03-10'),
-('Елена Васильева', 'Екатеринбург', '2023-04-05'),
-('Дмитрий Кузнецов', 'Казань', '2023-05-25'),
-('Ольга Попова', 'Нижний Новгород', '2023-06-30'),
-('Андрей Смирнов', 'Челябинск', '2023-07-12'),
-('Татьяна Михайлова', 'Омск', '2023-08-18'),
-('Алексей Фёдоров', 'Самара', '2023-09-22'),
-('Мария Николаева', 'Ростов-на-Дону', '2023-10-30');
+('John Smith', 'New York', '2023-01-15'),
+('Emily Johnson', 'Los Angeles', '2023-02-20'),
+('Michael Williams', 'Chicago', '2023-03-10'),
+('Jessica Brown', 'Houston', '2023-04-05'),
+('David Jones', 'Phoenix', '2023-05-25'),
+('Sarah Garcia', 'Philadelphia', '2023-06-30'),
+('Daniel Miller', 'San Antonio', '2023-07-12'),
+('Laura Davis', 'San Diego', '2023-08-18'),
+('James Rodriguez', 'Dallas', '2023-09-22'),
+('Linda Martinez', 'San Jose', '2023-10-30');
 
--- 2. Вставка данных о 15 продуктах
+-- 2. Inserting data for 15 products
 INSERT INTO products (product_name, category, price) VALUES
-('Ноутбук "ProBook 15"', 'Электроника', 75000.00),
-('Смартфон "Galaxy S25"', 'Электроника', 62000.00),
-('Наушники "SoundPro"', 'Электроника', 8500.00),
-('Кофемашина "Espresso Deluxe"', 'Бытовая техника', 25000.00),
-('Книга "Основы Python"', 'Книги', 2100.00),
-('Книга "Искусство программирования"', 'Книги', 3200.00),
-('Умные часы "FitWatch 5"', 'Электроника', 15000.00),
-('Игровая консоль "PlayBox X"', 'Электроника', 48000.00),
-('Робот-пылесос "CleanBot Z1"', 'Бытовая техника', 31000.00),
-('Кофе "Арабика", 1кг', 'Продукты', 1500.00),
-('Чай "Эрл Грей", 100г', 'Продукты', 450.00),
-('Кресло "Комфорт"', 'Мебель', 18000.00),
-('Стол "Дубовый"', 'Мебель', 22000.00),
-('Монитор "ViewSonic 27"', 'Электроника', 28500.00),
-('Клавиатура "Mechanical Pro"', 'Электроника', 9800.00);
+('Laptop "ProBook 15"', 'Electronics', 75000.00),
+('Smartphone "Galaxy S25"', 'Electronics', 62000.00),
+('Headphones "SoundPro"', 'Electronics', 8500.00),
+('Coffee Machine "Espresso Deluxe"', 'Home Appliances', 25000.00),
+('Book "Python Basics"', 'Books', 2100.00),
+('Book "The Art of Programming"', 'Books', 3200.00),
+('Smartwatch "FitWatch 5"', 'Electronics', 15000.00),
+('Gaming Console "PlayBox X"', 'Electronics', 48000.00),
+('Robot Vacuum "CleanBot Z1"', 'Home Appliances', 31000.00),
+('Coffee "Arabica", 1kg', 'Groceries', 1500.00),
+('Tea "Earl Grey", 100g', 'Groceries', 450.00),
+('Armchair "Comfort"', 'Furniture', 18000.00),
+('Table "Oakwood"', 'Furniture', 22000.00),
+('Monitor "ViewSonic 27"', 'Electronics', 28500.00),
+('Keyboard "Mechanical Pro"', 'Electronics', 9800.00);
 
--- 3. Вставка данных о 200 продажах (сгенерировано скриптом)
--- Для расчета total_amount использовалась цена продукта на момент вставки.
+
+-- 3. Inserting data for 200 sales
 INSERT INTO sales (product_id, customer_id, sale_date, quantity, total_amount) VALUES
 (1, 10, '2024-03-24', 3, 225000.00),
 (15, 8, '2024-04-18', 2, 19600.00),
