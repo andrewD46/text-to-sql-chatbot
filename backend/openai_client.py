@@ -86,7 +86,6 @@ async def generate_sql_from_question(question: str) -> str:
         max_tokens=500,
     )
     sql_query = response.choices[0].message.content.strip()
-    print(sql_query)
 
     # Очистка от возможных "```sql" и "```"
     if sql_query.startswith("```sql"):

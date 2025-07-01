@@ -4,32 +4,41 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException, status
 
-from crud import execute_sql
-from schemas import SQLGenerationRequest, SQLGenerationResponse, SQLExecutionRequest, SQLExecutionResponse, StatusResponse
+from schemas import SQLGenerationRequest, SQLGenerationResponse, SQLExecutionRequest, SQLExecutionResponse
 
 from openai_client import generate_sql_from_question
 from database import get_db
 
 
 app = FastAPI(
-    title="Postgres + OpenAI Analyst API",
-    description="A FastAPI application to generate SQL using OpenAI and manage query history in PostgreSQL.",
+    title="Text-to-SQL Chatbot",
+    description="A FastAPI application to generate SQL using different AI tools.",
     version="2.0.0",
 )
 
 
-# --- API Endpoints ---
+def __execute_sql(db: Session, sql_query: str):
+    try:
+        result = db.execute(sql_query)
+        if result.returns_rows:
+            data = [dict(row) for row in result.mappings()]
+            return {"data": data, "error": None}
+        db.commit()
+        return {"data": [{"status": "success", "rows_affected": result.rowcount}], "error": None}
+    except Exception as e:
+        db.rollback()
+        return {"data": None, "error": str(e)}
+
 
 @app.post("/api/generate_sql", response_model=SQLGenerationResponse, tags=["AI"])
 async def generate_sql(
-        request: SQLGenerationRequest,
-        db: Session = Depends(get_db)
+        request: SQLGenerationRequest
 ):
     """
     Generates a SQL query from a natural language question using OpenAI API.
     """
     try:
-        # 2. Генерируем SQL через OpenAI
+        # generate SQL with AI
         generated_sql = await generate_sql_from_question(request.question)
 
         if "I cannot answer this question." in generated_sql:
@@ -59,7 +68,7 @@ def execute_sql_endpoint(
         db: Session = Depends(get_db)
 ):
     """Executes a given SQL query and returns the results."""
-    result = execute_sql(db, text(request.sql_query))
+    result = __execute_sql(db, text(request.sql_query))
     if result["error"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
