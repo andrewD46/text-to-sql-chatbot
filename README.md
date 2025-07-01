@@ -1,6 +1,6 @@
 # 🤖 Text-to-SQL Chatbot
 
-An intelligent chatbot for converting natural language to SQL queries with the ability to execute them and visualize results.
+This is a simple example of an AI chatbot for converting natural language into SQL queries with the ability to execute them and visualize the results.
 
 ## 📋 Project Description
 
