@@ -162,7 +162,7 @@ def display_charts_tab(df: pd.DataFrame, key_prefix: str):
 
     chart_type = st.selectbox(
         "Chart Type",
-        options=["Line Chart 📈", "Bar Chart 📊"],
+        options=["Line Chart 📈"],
         key=f"chart_type_{key_prefix}",
     )
 
@@ -170,8 +170,6 @@ def display_charts_tab(df: pd.DataFrame, key_prefix: str):
         chart_df = df.set_index(x_col)
         if chart_type == "Line Chart 📈":
             st.line_chart(chart_df[y_col])
-        elif chart_type == "Bar Chart 📊":
-            st.bar_chart(chart_df[y_col])
     except Exception as e:
         st.error(f"Could not build the chart: {e}")
 
